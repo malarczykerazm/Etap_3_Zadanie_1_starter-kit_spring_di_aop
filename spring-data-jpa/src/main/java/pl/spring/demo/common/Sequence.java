@@ -10,7 +10,7 @@ public class Sequence {
         long result = 1;
         for (IdAware nextExistingId : existingIds) {
             if (Long.compare(nextExistingId.getId(), result) > 0) {
-                result = nextExistingId.getId();
+                result = nextExistingId.getId() + 1;
             }
         }
         return result;

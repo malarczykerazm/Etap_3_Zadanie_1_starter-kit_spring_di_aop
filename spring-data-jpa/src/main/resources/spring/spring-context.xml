@@ -18,16 +18,18 @@
 
     <!-- AOP -->
     <bean id="bookDaoAdvisor" class="pl.spring.demo.aop.BookDaoAdvisor"/>
+    <bean id="bookIdAdvisor" class="pl.spring.demo.aop.BookIdAdvisor">
+	    <property name="sequence" ref="sequence" />
+    </bean>
 
     <bean id="bookDao" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="target">
-            <bean class="pl.spring.demo.dao.impl.BookDaoImpl">
-                <property name="sequence" ref="sequence" />
-            </bean>
+            <bean class="pl.spring.demo.dao.impl.BookDaoImpl"/>
         </property>
         <property name="interceptorNames">
             <list>
                 <value>bookDaoAdvisor</value>
+                <value>bookIdAdvisor</value>
             </list>
         </property>
     </bean>

@@ -19,6 +19,7 @@ public class BookTo implements IdAware {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

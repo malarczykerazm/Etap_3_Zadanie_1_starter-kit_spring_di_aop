@@ -6,30 +6,31 @@ import pl.spring.demo.annotation.NullableId;
 import pl.spring.demo.exception.BookNotNullIdException;
 import pl.spring.demo.to.IdAware;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public class BookDaoAdvisor implements MethodBeforeAdvice {
 
     @Override
-    public void before(Method method, Object[] objects, Object o) throws Throwable {
+    public void before(Method currentMethod, Object[] argsOfCurrentMethod, Object instanceOfCurrentClass) throws Throwable {
 
-        if (hasAnnotation(method, o, NullableId.class)) {
-            checkNotNullId(objects[0]);
+        if (hasAnnotation(currentMethod, instanceOfCurrentClass, NullableId.class)) {
+            checkNotNullId(argsOfCurrentMethod[0]);
         }
     }
 
-    private void checkNotNullId(Object o) {
-        if (o instanceof IdAware && ((IdAware) o).getId() != null) {
+    private void checkNotNullId(Object instanceOfCurrentClass) {
+        if (instanceOfCurrentClass instanceof IdAware && ((IdAware) instanceOfCurrentClass).getId() != null) {
             throw new BookNotNullIdException();
         }
     }
 
-    private boolean hasAnnotation (Method method, Object o, Class annotationClazz) throws NoSuchMethodException {
-        boolean hasAnnotation = method.getAnnotation(annotationClazz) != null;
+    private boolean hasAnnotation (Method currentMethod, Object instanceOfCurrentClass, Class<? extends Annotation> annotationClass) throws NoSuchMethodException {
+        boolean doesHaveAnnotation = (currentMethod.getAnnotation(annotationClass) != null);
 
-        if (!hasAnnotation && o != null) {
-            hasAnnotation = o.getClass().getMethod(method.getName(), method.getParameterTypes()).getAnnotation(annotationClazz) != null;
+        if (!doesHaveAnnotation && instanceOfCurrentClass != null) {
+            doesHaveAnnotation = (instanceOfCurrentClass.getClass().getMethod(currentMethod.getName(), currentMethod.getParameterTypes()).getAnnotation(annotationClass) != null);
         }
-        return hasAnnotation;
+        return doesHaveAnnotation;
     }
 }

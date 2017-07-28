@@ -1,45 +1,43 @@
 package pl.spring.demo.aop;
 
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import org.springframework.aop.MethodBeforeAdvice;
 
-import pl.spring.demo.annotation.NeedsNewBookId;
+import pl.spring.demo.annotation.MayNeedNewBookId;
 import pl.spring.demo.common.Sequence;
 import pl.spring.demo.dao.BookDao;
 import pl.spring.demo.to.BookTo;
-import pl.spring.demo.to.IdAware;
 
 public class BookIdAdvisor implements MethodBeforeAdvice {
 
     private Sequence sequence;
 
     @Override
-    public void before(Method method, Object[] objects, Object o) throws Throwable {
+    public void before(Method currentMethod, Object[] argsOfCurrentMethod, Object instanceOfCurrentClass) throws Throwable {
 
-        if (hasAnnotation(method, o, NeedsNewBookId.class)) {
-            createNewBookId(objects[0], o);
+        if (hasAnnotation(currentMethod, instanceOfCurrentClass, MayNeedNewBookId.class)) {
+            createNewBookId(argsOfCurrentMethod[0], instanceOfCurrentClass);
         }
     }
 
-    private void createNewBookId(Object arg, Object o) {
-    	if (o instanceof IdAware && ((IdAware) o).getId() != null) {
-    		BookDao bookDao = (BookDao) o;
-    		List<BookTo> list = bookDao.findAll();
-    		BookTo book = (BookTo) arg;
-    		book.setId(sequence.nextValue(list));
-    	}
+    private void createNewBookId(Object parameterOfCurrentMethod, Object instanceOfCurrentClass) {
+    	BookDao bookDao = (BookDao) instanceOfCurrentClass;
+    	List<BookTo> list = bookDao.findAll();
+    	BookTo book = (BookTo) parameterOfCurrentMethod;
+    	book.setId(sequence.nextValue(list));
     }
 
-    private boolean hasAnnotation (Method method, Object o, Class annotationClazz) throws NoSuchMethodException {
-        boolean hasAnnotation = method.getAnnotation(annotationClazz) != null;
+    private boolean hasAnnotation (Method currentdMethod, Object instanceOfCurrentClass, Class<? extends Annotation> annotationClass) throws NoSuchMethodException {
+        boolean doesHaveAnnotation = (currentdMethod.getAnnotation(annotationClass) != null);
 
-        if (!hasAnnotation && o != null) {
-            hasAnnotation = o.getClass().getMethod(method.getName(), method.getParameterTypes()).getAnnotation(annotationClazz) != null;
+        if (!doesHaveAnnotation && instanceOfCurrentClass != null) {
+        	doesHaveAnnotation = (instanceOfCurrentClass.getClass().getMethod(currentdMethod.getName(), currentdMethod.getParameterTypes()).getAnnotation(annotationClass) != null);
         }
-        return hasAnnotation;
+        return doesHaveAnnotation;
     }
 
     public void setSequence(Sequence sequence) {

@@ -1,15 +1,14 @@
 package pl.spring.demo.dao.impl;
 
-import pl.spring.demo.annotation.NeedsNewBookId;
-import pl.spring.demo.annotation.NullableId;
-import pl.spring.demo.common.Sequence;
-import pl.spring.demo.dao.BookDao;
-import pl.spring.demo.to.BookTo;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import pl.spring.demo.annotation.MayNeedNewBookId;
+import pl.spring.demo.annotation.NullableId;
+import pl.spring.demo.dao.BookDao;
+import pl.spring.demo.to.BookTo;
 
 public class BookDaoImpl implements BookDao {
 
@@ -36,7 +35,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     @NullableId
-    @NeedsNewBookId
+    @MayNeedNewBookId
     public BookTo save(BookTo book) {
         ALL_BOOKS.add(book);
         return book;

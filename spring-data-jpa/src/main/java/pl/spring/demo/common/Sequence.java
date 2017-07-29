@@ -10,9 +10,9 @@ public class Sequence {
         long result = 1;
         for (IdAware nextExistingId : existingIds) {
             if (Long.compare(nextExistingId.getId(), result) > 0) {
-                result = nextExistingId.getId() + 1;
+                result = nextExistingId.getId();
             }
         }
-        return result;
+        return result + 1;
     }
 }

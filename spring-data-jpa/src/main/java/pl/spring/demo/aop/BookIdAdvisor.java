@@ -17,25 +17,25 @@ public class BookIdAdvisor implements MethodBeforeAdvice {
     private Sequence sequence;
 
     @Override
-    public void before(Method currentMethod, Object[] argsOfCurrentMethod, Object instanceOfCurrentClass) throws Throwable {
+    public void before(Method cosnideredMethod, Object[] paramsOfConsideredMethod, Object instanceOfConsideredClass) throws Throwable {
 
-        if (hasAnnotation(currentMethod, instanceOfCurrentClass, MayNeedNewBookId.class)) {
-            createNewBookId(argsOfCurrentMethod[0], instanceOfCurrentClass);
+        if (hasAnnotation(cosnideredMethod, instanceOfConsideredClass, MayNeedNewBookId.class)) {
+            createNewBookId(paramsOfConsideredMethod[0], instanceOfConsideredClass);
         }
     }
 
-    private void createNewBookId(Object parameterOfCurrentMethod, Object instanceOfCurrentClass) {
-    	BookDao bookDao = (BookDao) instanceOfCurrentClass;
+    private void createNewBookId(Object parameterOfConsideredMethod, Object instanceOfConsideredClass) {
+    	BookDao bookDao = (BookDao) instanceOfConsideredClass;
     	List<BookTo> list = bookDao.findAll();
-    	BookTo book = (BookTo) parameterOfCurrentMethod;
+    	BookTo book = (BookTo) parameterOfConsideredMethod;
     	book.setId(sequence.nextValue(list));
     }
 
-    private boolean hasAnnotation (Method currentdMethod, Object instanceOfCurrentClass, Class<? extends Annotation> annotationClass) throws NoSuchMethodException {
-        boolean doesHaveAnnotation = (currentdMethod.getAnnotation(annotationClass) != null);
+    private boolean hasAnnotation (Method consideredMethod, Object instanceOfConsideredClass, Class<? extends Annotation> annotationClass) throws NoSuchMethodException {
+        boolean doesHaveAnnotation = (consideredMethod.getAnnotation(annotationClass) != null);
 
-        if (!doesHaveAnnotation && instanceOfCurrentClass != null) {
-        	doesHaveAnnotation = (instanceOfCurrentClass.getClass().getMethod(currentdMethod.getName(), currentdMethod.getParameterTypes()).getAnnotation(annotationClass) != null);
+        if (!doesHaveAnnotation && instanceOfConsideredClass != null) {
+        	doesHaveAnnotation = (instanceOfConsideredClass.getClass().getMethod(consideredMethod.getName(), consideredMethod.getParameterTypes()).getAnnotation(annotationClass) != null);
         }
         return doesHaveAnnotation;
     }

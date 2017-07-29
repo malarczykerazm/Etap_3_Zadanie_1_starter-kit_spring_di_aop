@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pl.spring.demo.annotation.MayNeedNewBookId;
 import pl.spring.demo.annotation.NullableId;
@@ -25,12 +26,12 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<BookTo> findBookByTitle(String title) {
-        return null;
+        return ALL_BOOKS.stream().filter(b -> b.getTitle().toLowerCase().equals(title.toLowerCase())).collect(Collectors.toList());
     }
 
     @Override
     public List<BookTo> findBooksByAuthor(String author) {
-        return null;
+    	return ALL_BOOKS.stream().filter(b -> b.getAuthors().toLowerCase().contains(author.toLowerCase())).collect(Collectors.toList());
     }
 
     @Override

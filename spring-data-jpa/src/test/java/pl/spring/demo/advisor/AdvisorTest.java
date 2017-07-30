@@ -58,7 +58,7 @@ public class AdvisorTest {
 		// then
 		// EXCEPTION
 	}
-	
+
 	@Test
 	public void shouldThrowAnExceptionDueToAlreadyExistingBookInDatabase() throws BookAlreadyExistsException {
 		// given

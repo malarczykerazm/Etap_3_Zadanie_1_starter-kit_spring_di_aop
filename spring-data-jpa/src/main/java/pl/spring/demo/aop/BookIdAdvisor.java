@@ -25,18 +25,18 @@ public class BookIdAdvisor implements MethodBeforeAdvice {
 	}
 
 	private void createNewBookId(Object parameterOfConsideredMethod, Object instanceOfConsideredClass) {
-			List<BookTo> list = ((BookDao) instanceOfConsideredClass).findAll();
-			((BookTo) parameterOfConsideredMethod).setId(sequence.nextValue(list));	
+		List<BookTo> list = ((BookDao) instanceOfConsideredClass).findAll();
+		((BookTo) parameterOfConsideredMethod).setId(sequence.nextValue(list));
 	}
 
 	private boolean hasAnnotation(Method consideredMethod, Object instanceOfConsideredClass,
-			Class<? extends Annotation> annotationClass) throws NoSuchMethodException {
-		boolean doesHaveAnnotation = (consideredMethod.getAnnotation(annotationClass) != null);
+			Class<? extends Annotation> annotationClazz) throws NoSuchMethodException {
+		boolean doesHaveAnnotation = (consideredMethod.getAnnotation(annotationClazz) != null);
 
 		if (!doesHaveAnnotation && instanceOfConsideredClass != null) {
 			doesHaveAnnotation = (instanceOfConsideredClass.getClass()
 					.getMethod(consideredMethod.getName(), consideredMethod.getParameterTypes())
-					.getAnnotation(annotationClass) != null);
+					.getAnnotation(annotationClazz) != null);
 		}
 		return doesHaveAnnotation;
 	}

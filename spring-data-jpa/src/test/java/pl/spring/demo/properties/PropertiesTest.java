@@ -11,14 +11,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration
 public class PropertiesTest {
 
-    @Value(value = "#{applicationProperties['app.name']}")
-    private String applicationName;
+	@Value(value = "#{applicationProperties['app.name']}")
+	private String applicationName;
 
-    @Test
-    public void testShouldCheckApplicationName() {
-        // given
-        final String appName = "starter-kit";
-        // when then
-        Assert.assertEquals(appName, applicationName);
-    }
+	@Test
+	public void testShouldCheckApplicationName() {
+		// given
+		final String appName = "starter-kit";
+		// when then
+		Assert.assertEquals(appName, applicationName);
+	}
 }

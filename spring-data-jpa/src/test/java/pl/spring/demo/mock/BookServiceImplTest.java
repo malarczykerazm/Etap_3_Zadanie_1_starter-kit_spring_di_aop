@@ -14,25 +14,25 @@ import static org.junit.Assert.assertEquals;
 
 public class BookServiceImplTest {
 
-    @InjectMocks
-    private BookServiceImpl bookService;
-    @Mock
-    private BookDao bookDao;
+	@InjectMocks
+	private BookServiceImpl bookService;
+	@Mock
+	private BookDao bookDao;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    public void testShouldSaveBook() {
-        // given
-        BookTo book = new BookTo(null, "title", "author");
-        Mockito.when(bookDao.save(book)).thenReturn(new BookTo(1L, "title", "author"));
-        // when
-        BookTo result = bookService.saveBook(book);
-        // then
-        Mockito.verify(bookDao).save(book);
-        assertEquals(1L, result.getId().longValue());
-    }
+	@Test
+	public void testShouldSaveBook() {
+		// given
+		BookTo book = new BookTo(null, "title", "author");
+		Mockito.when(bookDao.save(book)).thenReturn(new BookTo(1L, "title", "author"));
+		// when
+		BookTo result = bookService.saveBook(book);
+		// then
+		Mockito.verify(bookDao).save(book);
+		assertEquals(1L, result.getId().longValue());
+	}
 }

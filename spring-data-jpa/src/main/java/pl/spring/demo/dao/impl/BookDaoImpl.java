@@ -34,9 +34,9 @@ public class BookDaoImpl implements BookDao {
     	return ALL_BOOKS.stream().filter(b -> b.getAuthors().toLowerCase().contains(author.toLowerCase())).collect(Collectors.toList());
     }
 
-    @Override
     @NullableId
     @MayNeedNewBookId
+    @Override
     public BookTo save(BookTo book) {
         ALL_BOOKS.add(book);
         return book;

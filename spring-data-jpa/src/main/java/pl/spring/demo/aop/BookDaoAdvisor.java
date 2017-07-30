@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import pl.spring.demo.annotation.NullableId;
 import pl.spring.demo.dao.BookDao;
+import pl.spring.demo.exception.BookAlreadyExistsException;
 import pl.spring.demo.exception.BookNotNullIdException;
 import pl.spring.demo.exception.WrongInputException;
 import pl.spring.demo.to.BookTo;
@@ -29,13 +30,16 @@ public class BookDaoAdvisor implements MethodBeforeAdvice {
 		}
 	}
 
-	private void checkNotNullId(Object parameterOfConsideredMethod) throws BookNotNullIdException, WrongInputException {
+	private void checkNotNullId(Object parameterOfConsideredMethod)
+			throws BookAlreadyExistsException, WrongInputException, BookNotNullIdException {
 		if (!(parameterOfConsideredMethod.getClass().equals(BookTo.class))) {
 			throw new WrongInputException("The input for the considered method is incorrect.");
 		}
-		if (bookDao.findBookByTitle(((BookTo) parameterOfConsideredMethod).getTitle()).size() >= 1
-				&& bookDao.findBookByTitle(((BookTo) parameterOfConsideredMethod).getTitle()).get(0).getId() != null) {
-			throw new BookNotNullIdException("The considered book already has an Id.");
+		if (null != ((BookTo) parameterOfConsideredMethod).getId()) {
+			throw new BookNotNullIdException();
+		}
+		if (bookDao.findBookByTitle(((BookTo) parameterOfConsideredMethod).getTitle()).size() >= 1) {
+			throw new BookAlreadyExistsException("The considered book already exists in the database.");
 		}
 	}
 

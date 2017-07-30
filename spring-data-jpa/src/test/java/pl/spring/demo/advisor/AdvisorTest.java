@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import pl.spring.demo.dao.BookDao;
+import pl.spring.demo.exception.BookAlreadyExistsException;
 import pl.spring.demo.exception.BookNotNullIdException;
 import pl.spring.demo.to.BookTo;
 
@@ -26,32 +27,50 @@ public class AdvisorTest {
 	@Test
 	public void shouldSaveNewBookWithNewId() {
 		// given
-		BookTo book = new BookTo();
-		book.setTitle("Test book");
-		book.setAuthors("Batman Superman");
+		BookTo bookWithoutAnId = new BookTo();
+		bookWithoutAnId.setTitle("Test book");
+		bookWithoutAnId.setAuthors("Batman");
 
 		// when
-		bookDao.save(book);
+		bookDao.save(bookWithoutAnId);
 
 		// then
 		Assert.assertEquals(7, bookDao.findAll().size());
-		Assert.assertTrue(book.getId() == 7L);
+		Assert.assertTrue(bookWithoutAnId.getId() == 7L);
 		Assert.assertTrue(bookDao.findBookByTitle("test book").get(0).getId() == 7L);
-		Assert.assertTrue(bookDao.findBooksByAuthor("batman superman").get(0).getId() == 7L);
+		Assert.assertTrue(bookDao.findBooksByAuthor("batman").get(0).getId() == 7L);
 	}
 
 	@Test
 	public void shouldThrowAnExceptionDueToNotNullIdOfTheBook() throws BookNotNullIdException {
 		// given
-		BookTo book = new BookTo();
-		book.setTitle("Zemsta");
+		BookTo bookWithAnId = new BookTo();
+		bookWithAnId.setTitle("A book with an Id");
+		bookWithAnId.setAuthors("Batman Superman");
+		bookWithAnId.setId(12L);
 
 		// expect
 		e.expect(BookNotNullIdException.class);
-		e.expectMessage("Id");
 
 		// when
-		bookDao.save(book);
+		bookDao.save(bookWithAnId);
+
+		// then
+		// EXCEPTION
+	}
+	
+	@Test
+	public void shouldThrowAnExceptionDueToAlreadyExistingBookInDatabase() throws BookAlreadyExistsException {
+		// given
+		BookTo existingBook = new BookTo();
+		existingBook.setTitle("Zemsta");
+
+		// expect
+		e.expect(BookAlreadyExistsException.class);
+		e.expectMessage("database");
+
+		// when
+		bookDao.save(existingBook);
 
 		// then
 		// EXCEPTION
